@@ -11,6 +11,7 @@ import time
 import json
 import subprocess
 import numpy
+import imageio
 
 imageio.plugins.ffmpeg.download()
 
@@ -122,8 +123,15 @@ def ffwd(data_in, paths_out, checkpoint_dir, device_t='/gpu:0', batch_size=4):
 
             _preds = sess.run(preds, feed_dict={img_placeholder:X})
             for j, path_out in enumerate(curr_batch_out):
-                print (path_out)
-                save_img(path_out+"/", _preds[j])
+                filename, file_extension = os.path.splitext(path_out)
+                check_nodir = os.path.basename(checkpoint_dir)
+                checkname, check_extension = os.path.splitext(check_nodir)
+##                print(filename)
+##                print(checkname)
+##                print(file_extension)
+                save = "%s_%s%s" % (filename,checkname,file_extension)
+                print (save)
+                save_img(save, _preds[j])
                 
         remaining_in = data_in[num_iters*batch_size:]
         remaining_out = paths_out[num_iters*batch_size:]
@@ -132,14 +140,15 @@ def ffwd(data_in, paths_out, checkpoint_dir, device_t='/gpu:0', batch_size=4):
             device_t=device_t, batch_size=1)
 
 def ffwd_to_img(in_path, out_path, checkpoint_dir, device='/cpu:0'):
-    if not os.path.isdir(opts.checkpoint_dir):
+    if not os.path.isdir(checkpoint_dir):
         paths_in, paths_out = [in_path], [out_path]
         ffwd(paths_in, paths_out, checkpoint_dir, batch_size=1, device_t=device)
     else:
-        ckpts = list_files(opts.checkpoint_dir)
-        for c in range (ckpts):
-            paths_in, paths_out = [in_path], [out_path]
-            ffwd(paths_in, paths_out, c, batch_size=1, device_t=device)
+        ckpts = list_files(checkpoint_dir)
+        for c in ckpts:
+        	check = os.path.join(checkpoint_dir,c)
+        	paths_in, paths_out = [in_path], [out_path]
+        	ffwd(paths_in, paths_out, check, batch_size=1, device_t=device)
 
 def ffwd_different_dimensions(in_path, out_path, checkpoint_dir, 
             device_t=DEVICE, batch_size=4):

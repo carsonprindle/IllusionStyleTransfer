@@ -1,0 +1,1 @@
+python3 style.py --checkpoint-dir ./IllusionProject/StyleModels --style ./IllusionProject/StylePhotos/Mondrian2Small.png --test classpic.jpg --test-dir ./IllusionProject/TrainingTestImages
