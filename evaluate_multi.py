@@ -129,7 +129,7 @@ def ffwd(data_in, paths_out, checkpoint_dir, device_t='/gpu:0', batch_size=4):
 ##                print(filename)
 ##                print(checkname)
 ##                print(file_extension)
-                save = "%s_%s%s" % (filename,checkname,file_extension)
+                save = "%s__%s%s" % (filename,checkname,file_extension)
                 print (save)
                 save_img(save, _preds[j])
                 
@@ -140,6 +140,7 @@ def ffwd(data_in, paths_out, checkpoint_dir, device_t='/gpu:0', batch_size=4):
             device_t=device_t, batch_size=1)
 
 def ffwd_to_img(in_path, out_path, checkpoint_dir, device='/cpu:0'):
+    ## print("\nGenerating Images:")
     if not os.path.isdir(checkpoint_dir):
         paths_in, paths_out = [in_path], [out_path]
         ffwd(paths_in, paths_out, checkpoint_dir, batch_size=1, device_t=device)
